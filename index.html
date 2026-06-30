@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Cek Data & Sanggahan</title>
+    <title>Portal Anomali</title>
     <style>
         body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
         .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-top: 20px; }
@@ -15,28 +15,28 @@
 </head>
 <body>
 
-    <h2>Cek Kesalahan Data</h2>
-    <p>Masukkan NIK atau Nama Anda untuk mengecek data.</p>
+    <h2>Cek Anomali</h2>
+    <p>Masukkan username</p>
     
-    <input type="text" id="searchInput" placeholder="Masukkan NIK atau Nama...">
+    <input type="text" id="searchInput" placeholder="Masukkan username...">
     <button onclick="cariData()">Cari Data</button>
     <p id="loadingMsg" class="hidden">Mencari data...</p>
 
     <div id="resultArea" class="card hidden">
         <h3>Hasil Pencarian</h3>
-        <p><strong>Nama/NIK:</strong> <span id="resNama"></span></p>
-        <p><strong>Detail Kesalahan:</strong> <span id="resKesalahan" style="color: red;"></span></p>
+        <p><strong>Username:</strong> <span id="resNama"></span></p>
+        <p><strong>Detail Anomali:</strong> <span id="resKesalahan" style="color: red;"></span></p>
 
         <hr>
         
-        <h4>Kirim Sanggahan</h4>
+        <h4>Kirim Sanggahan/Catatan</h4>
         <textarea id="sanggahanInput" rows="4" placeholder="Ketik alasan atau bukti sanggahan Anda di sini..."></textarea>
         <button onclick="kirimSanggahan()">Kirim Sanggahan</button>
     </div>
 
     <script>
         // Nanti URL ini diganti dengan URL Google Apps Script Anda
-        const SCRIPT_URL = "14_xPQXERGmj7wLZ2X_yjM_yam75OaQc1l3Z57bK9CRI"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyS_T49WdbfR_bjaIrh4MjbQPohoTP5yaRcECtsjdRJuF-XfuP1dA27rkmVj2RucKzIOA/exec"; 
 
         async function cariData() {
             const keyword = document.getElementById('searchInput').value;
