@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Cek Data & Sanggahan</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        input, textarea, button { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background-color: #218838; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h2>Cek Kesalahan Data</h2>
+    <p>Masukkan NIK atau Nama Anda untuk mengecek data.</p>
+    
+    <input type="text" id="searchInput" placeholder="Masukkan NIK atau Nama...">
+    <button onclick="cariData()">Cari Data</button>
+    <p id="loadingMsg" class="hidden">Mencari data...</p>
+
+    <div id="resultArea" class="card hidden">
+        <h3>Hasil Pencarian</h3>
+        <p><strong>Nama/NIK:</strong> <span id="resNama"></span></p>
+        <p><strong>Detail Kesalahan:</strong> <span id="resKesalahan" style="color: red;"></span></p>
+
+        <hr>
+        
+        <h4>Kirim Sanggahan</h4>
+        <textarea id="sanggahanInput" rows="4" placeholder="Ketik alasan atau bukti sanggahan Anda di sini..."></textarea>
+        <button onclick="kirimSanggahan()">Kirim Sanggahan</button>
+    </div>
+
+    <script>
+        // Nanti URL ini diganti dengan URL Google Apps Script Anda
+        const SCRIPT_URL = "URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI"; 
+
+        async function cariData() {
+            const keyword = document.getElementById('searchInput').value;
+            if(!keyword) return alert("Masukkan nama/NIK dulu!");
+            
+            document.getElementById('loadingMsg').classList.remove('hidden');
+            document.getElementById('resultArea').classList.add('hidden');
+
+            try {
+                // Proses fetch data dari Google Sheets (GET)
+                const response = await fetch(`${SCRIPT_URL}?action=cari&keyword=${keyword}`);
+                const data = await response.json();
+
+                if (data.status === "ketemu") {
+                    document.getElementById('resNama').innerText = data.nama;
+                    document.getElementById('resKesalahan').innerText = data.kesalahan;
+                    document.getElementById('resultArea').classList.remove('hidden');
+                } else {
+                    alert("Data tidak ditemukan atau tidak ada kesalahan.");
+                }
+            } catch (error) {
+                alert("Terjadi kesalahan sistem.");
+            } finally {
+                document.getElementById('loadingMsg').classList.add('hidden');
+            }
+        }
+
+        async function kirimSanggahan() {
+            const nama = document.getElementById('resNama').innerText;
+            const sanggahan = document.getElementById('sanggahanInput').value;
+            
+            if(!sanggahan) return alert("Sanggahan tidak boleh kosong!");
+
+            try {
+                // Proses kirim data ke Google Sheets (POST)
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "sanggah", nama: nama, sanggahan: sanggahan })
+                });
+                alert("Sanggahan berhasil dikirim!");
+                document.getElementById('sanggahanInput').value = ""; // Kosongkan form
+                document.getElementById('resultArea').classList.add('hidden'); // Tutup area
+            } catch (error) {
+                alert("Gagal mengirim sanggahan.");
+            }
+        }
+    </script>
+</body>
+</html>
